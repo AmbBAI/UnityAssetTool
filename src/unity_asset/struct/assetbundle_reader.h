@@ -19,6 +19,8 @@ public:
 	AssetbundleReader() = default;
 
 	int Read(DataReader& reader);
+
+	void ReadBodyData(DataReader& reader);
 };
 
 #endif //!_ASSETBUNDLE_READER_H_

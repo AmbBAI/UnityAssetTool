@@ -15,5 +15,6 @@ void AssetHeader::Read(DataReader& reader)
 		isBigEndian = (reader.ReadByte() == 0);
 	}
 
+	assert(startOffset + metadataSize == reader.Tell());
 	reader.Seek(startOffset + metadataSize);
 }

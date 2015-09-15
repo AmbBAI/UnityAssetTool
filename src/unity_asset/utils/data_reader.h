@@ -4,6 +4,9 @@
 #include <cstdint>
 #include <string>
 #include <cassert>
+extern "C" {
+#include "LzmaDec.h"
+}
 
 enum ByteOrder
 {
@@ -18,8 +21,40 @@ class DataReader
 	size_t size = 0;
 	ByteOrder byteOrder = ByteOrder_LittleEndian;
 
+private:
+	DataReader() = default;
+
 public:
-	DataReader(const std::string& file)
+	static DataReader Decompress(DataReader& dataReader)
+	{
+		dataReader.SetByteOrder(ByteOrder_LittleEndian);
+		uint8_t* propData = new uint8_t[LZMA_PROPS_SIZE];
+		dataReader.ReadBytes(propData, LZMA_PROPS_SIZE);
+		SizeT uncompressSize = (SizeT)dataReader.ReadNumber<uint32_t>();
+		uint8_t* uncompressData = new uint8_t[uncompressSize];
+		dataReader.ReadNumber<uint32_t>(); // finish mode?
+		SizeT compressedSize = (SizeT)(dataReader.size - dataReader.offset);
+		ELzmaStatus lzmaStatus = LZMA_STATUS_NOT_SPECIFIED;
+
+		static ISzAlloc lzmaAlloc = {
+			[](void* p, size_t size) { p = p; return malloc(size); },
+			[](void* p, void *address) { p = p; free(address); } };
+
+		LzmaDecode(
+			uncompressData, (SizeT*)&uncompressSize,
+			dataReader.GetPtr(), (SizeT*)&compressedSize,
+			propData, LZMA_PROPS_SIZE,
+			LZMA_FINISH_ANY, &lzmaStatus, &lzmaAlloc);
+
+		DataReader retReader;
+		retReader.data = uncompressData;
+		retReader.offset = 0;
+		retReader.size = uncompressSize;
+		return retReader;
+	}
+
+public:
+	explicit DataReader(const std::string& file)
 	{
 		FILE* fp = fopen(file.c_str(), "rb");
 		assert(fp != nullptr);
@@ -34,6 +69,7 @@ public:
 			fclose(fp);
 		}
 	}
+	DataReader(DataReader&& other) { *this = std::move(other); }
 	virtual ~DataReader()
 	{
 		if (data != nullptr)
@@ -46,9 +82,10 @@ public:
 	}
 
 	void SetByteOrder(ByteOrder byteOrder) { this->byteOrder = byteOrder; }
-	ByteOrder GetByteOrder() { return byteOrder; }
+	ByteOrder GetByteOrder() const { return byteOrder; }
 
-	size_t Tell() { return offset; }
+	size_t GetSize() const { return size; }
+	size_t Tell() const { return offset; }
 	void Seek(size_t offset) { offset = offset; }
 
 	uint8_t* GetPtr()
@@ -86,6 +123,27 @@ public:
 		return ret;
 	}
 
+	DataReader& operator =(DataReader&& other)
+	{
+		if (this == &other) return *this;
+		if (data != nullptr)
+		{
+			delete data;
+			data = nullptr;
+		}
+
+		data = other.data;
+		offset = other.offset;
+		size = other.size;
+		byteOrder = other.byteOrder;
+
+		other.data = nullptr;
+		other.offset = 0;
+		other.size = 0;
+		other.byteOrder = ByteOrder_LittleEndian;
+
+		return *this;
+	}
 };
 
 #endif //!_DATA_READER_H_

@@ -4,7 +4,22 @@
 int AssetbundleReader::Read(DataReader& reader)
 {
 	header.Read(reader);
+	if (!header.IsSignatureValid()) return -1;
 
+	if (header.IsCompressed())
+	{
+		ReadBodyData(DataReader::Decompress(reader));
+	}
+	else
+	{
+		ReadBodyData(reader);
+	}
+	
+	return 0;
+}
+
+void AssetbundleReader::ReadBodyData(DataReader& reader)
+{
 	reader.SetByteOrder(ByteOrder_BigEndian);
 	int fileCount = reader.ReadNumber<int32_t>();
 
@@ -15,6 +30,4 @@ int AssetbundleReader::Read(DataReader& reader)
 		entryInfo.Read(reader);
 		entryInfos.emplace_back(entryInfo);
 	}
-	
-	return 0;
 }

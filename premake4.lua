@@ -36,7 +36,7 @@ solution "UnityAssetTool"
       "src/unity_asset/**.h",
       "src/unity_asset/**.cpp",
     }
-    includedirs { "src", "src/unity_asset/" }
+    includedirs { "src/lzma/", "src/unity_asset/" }
     libdirs {"lib/"}
     links { "lzma" }
 
@@ -55,7 +55,7 @@ solution "UnityAssetTool"
       "src/unity_asset_extractor/**.cpp",
     }
     
-    includedirs { "src/unity_asset/", "src/unity_asset_extractor/" }
+    includedirs { "src/lzma/", "src/unity_asset/", "src/unity_asset_extractor/" }
     libdirs {"lib/"}
     links { "lzma", "unity_asset" }
 

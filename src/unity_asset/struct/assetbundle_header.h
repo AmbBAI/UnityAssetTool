@@ -24,12 +24,13 @@ public:
 	std::vector<std::pair<uint32_t, uint32_t> > levelByteEnd;
 	int32_t completeFileSize = 0;
 	int32_t fileInfoHeaderSize = 0;
-	bool isCompressed = false;
 
 public:
 	AssetbundleHeader() = default;
 
 	int Read(DataReader& reader);
+	bool IsSignatureValid() { return signature == signatureWeb || signature == signatureRaw; }
+	bool IsCompressed() { return signature == signatureWeb; }
 };
 
 #endif //!_ASSETBUNDLE_HEADER_H_

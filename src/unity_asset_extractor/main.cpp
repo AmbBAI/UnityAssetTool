@@ -6,7 +6,7 @@
 
 int main()
 {
-	DataReader in("test5.1.assetbundle");
+	DataReader in("test5.1_lzma.assetbundle");
 	AssetbundleReader asserbundleReader;
 	asserbundleReader.Read(in);
 }

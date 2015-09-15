@@ -25,7 +25,7 @@ int AssetbundleHeader::Read(DataReader& reader)
 
 	completeFileSize = reader.ReadNumber<int32_t>();
 	fileInfoHeaderSize = reader.ReadNumber<int32_t>();
-	isCompressed = (reader.ReadByte() != 0);
+	reader.ReadByte(); // no use
 
 	int endOffset = reader.Tell();
 	assert(endOffset - startOffset == headerSize);
