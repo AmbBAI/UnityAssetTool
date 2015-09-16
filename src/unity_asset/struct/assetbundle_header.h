@@ -16,8 +16,8 @@ class AssetbundleHeader
 public:
 	std::string signature;
 	uint32_t streamVersion = 0;
-	UnityVersion playerVersion;
-	UnityVersion engineVersion;
+	std::string playerVersion;
+	std::string engineVersion;
 	int32_t minimumStreamedBytes = 0;
 	int32_t headerSize = 0;
 	int32_t numberOfLevelsToDownload = 0;

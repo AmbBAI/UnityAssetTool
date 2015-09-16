@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <cassert>
+#include <memory>
 extern "C" {
 #include "LzmaDec.h"
 }
@@ -20,9 +21,6 @@ class DataReader
 	size_t offset = 0;
 	size_t size = 0;
 	ByteOrder byteOrder = ByteOrder_LittleEndian;
-
-private:
-	DataReader() = default;
 
 public:
 	static DataReader Decompress(DataReader& dataReader)
@@ -54,6 +52,7 @@ public:
 	}
 
 public:
+	DataReader() = default;
 	explicit DataReader(const std::string& file)
 	{
 		FILE* fp = fopen(file.c_str(), "rb");
@@ -86,7 +85,7 @@ public:
 
 	size_t GetSize() const { return size; }
 	size_t Tell() const { return offset; }
-	void Seek(size_t offset) { offset = offset; }
+	void Seek(size_t offset) { this->offset = offset; }
 
 	uint8_t* GetPtr()
 	{

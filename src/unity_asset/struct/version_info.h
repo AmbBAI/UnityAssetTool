@@ -7,8 +7,8 @@
 struct VersionInfo
 {
 public:
-	UnityVersion playerVersion;
-	UnityVersion engineVersion;
+	std::string playerVersion;
+	std::string engineVersion;
 	// 5 = 1.2 - 2.0
 	// 6 = 2.1 - 2.6
 	// 7 = 3.0 (?)

@@ -11,8 +11,8 @@
 class AssetHeader
 {
 public:
-	VersionInfo versionInfo;
-
+	//VersionInfo versionInfo;
+	int32_t format;
 	int32_t metadataSize = 0;
 	int fileSize = 0;
 	int dataOffset = 0;
