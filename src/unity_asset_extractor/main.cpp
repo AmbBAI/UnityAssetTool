@@ -7,6 +7,6 @@
 int main()
 {
 	AssetbundleReader asserbundleReader;
-	asserbundleReader.Load("test5.1_lzma.assetbundle");
+	asserbundleReader.Load("test5.1.assetbundle");
 	auto assetFileList = asserbundleReader.ReadAssetFiles();
 }

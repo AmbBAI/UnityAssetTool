@@ -4,8 +4,8 @@
 void AssetFile::Read(DataReader& reader)
 {
 	header.Read(reader);
+	size_t startOffset = reader.Tell();
 	metaData.Read(reader, header.format);
-
-	reader.SetByteOrder(ByteOrder_LittleEndian);
+	size_t endOffset = reader.Tell();
 
 }

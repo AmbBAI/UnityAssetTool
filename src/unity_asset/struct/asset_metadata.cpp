@@ -21,4 +21,6 @@ void AssetMetaData::Read(DataReader& reader, int format)
 		objectInfo.Read(reader);
 		objectInfoMap[pathID] = objectInfo;
 	}
+
+	// TODO
 }

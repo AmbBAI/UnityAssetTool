@@ -31,4 +31,10 @@ void TypeTree::Read(DataReader& reader, int format)
 
 		typeMap[classID] = baseClass;
 	}
+	embedded = (numberBaseClasses != 0);
+
+	if (format < 13)
+	{
+		int32_t unkonwn = reader.ReadNumber<int32_t>();
+	}
 }

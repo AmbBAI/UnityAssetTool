@@ -11,10 +11,14 @@ void TypeNode::Read(DataReader& reader, int format)
 	std::vector<Type> types;
 	for (int i = 0; i < numberFields; ++i)
 	{
-		Type type;
-		type.Read(reader, format);
-		types.emplace_back(type);
+		uint8_t bytes[24];
+		reader.ReadBytes(bytes, 24);
+//		Type type;
+//		type.Read(reader, format);
+//		types.emplace_back(type);
 	}
 
+	uint8_t* stringTable = new uint8_t[stringTableLen];
+	reader.ReadBytes(stringTable, stringTableLen);
 
 }
