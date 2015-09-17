@@ -18,7 +18,7 @@ void AssetMetaData::Read(DataReader& reader, int format)
 			pathID = (uint64_t)reader.ReadNumber<uint32_t>();
 
 		ObjectInfo objectInfo;
-		objectInfo.Read(reader);
+		objectInfo.Read(reader, format);
 		objectInfoMap[pathID] = objectInfo;
 	}
 

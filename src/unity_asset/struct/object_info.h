@@ -18,7 +18,7 @@ public:
 public:
 	ObjectInfo() = default;
 
-	void Read(DataReader& reader);
+	void Read(DataReader& reader, int format);
 };
 
 #endif //!_OBJECT_INFO_H_
