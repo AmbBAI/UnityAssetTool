@@ -17,6 +17,7 @@ enum ByteOrder
 
 class DataReader
 {
+protected:
 	uint8_t* data = nullptr;
 	size_t offset = 0;
 	size_t size = 0;
@@ -40,7 +41,7 @@ public:
 
 		LzmaDecode(
 			uncompressData, (SizeT*)&uncompressSize,
-			dataReader.GetPtr(), (SizeT*)&compressedSize,
+			dataReader.data + dataReader.offset, (SizeT*)&compressedSize,
 			propData, LZMA_PROPS_SIZE,
 			LZMA_FINISH_ANY, &lzmaStatus, &lzmaAlloc);
 
@@ -53,23 +54,14 @@ public:
 
 public:
 	DataReader() = default;
-	explicit DataReader(const std::string& file)
+	explicit DataReader(uint8_t* dataBuffer, size_t size)
 	{
-		FILE* fp = fopen(file.c_str(), "rb");
-		assert(fp != nullptr);
-		if (fp != nullptr)
-		{
-			fseek(fp, 0, SEEK_END);
-			this->size = ftell(fp);
-			fseek(fp, 0, SEEK_SET);
-			assert(this->size > 0);
-			this->data = new uint8_t[size];
-			size_t rsize = fread(this->data, 1, size, fp);
-			fclose(fp);
-		}
+		this->data = dataBuffer;
+		this->size = size;
 	}
 	DataReader(DataReader&& other) { *this = std::move(other); }
-	virtual ~DataReader()
+	virtual ~DataReader() { Close(); }
+	virtual void Close()
 	{
 		if (data != nullptr)
 		{
@@ -83,29 +75,24 @@ public:
 	void SetByteOrder(ByteOrder byteOrder) { this->byteOrder = byteOrder; }
 	ByteOrder GetByteOrder() const { return byteOrder; }
 
-	size_t GetSize() const { return size; }
-	size_t Tell() const { return offset; }
-	void Seek(size_t offset) { this->offset = offset; }
+	virtual size_t GetSize() const { return size; }
+	virtual size_t Tell() const { return offset; }
+	virtual void Seek(size_t offset) { this->offset = offset; }
 
-	uint8_t* GetPtr()
-	{
-		return data + offset;
-	}
-
-	std::string ReadString()
+	virtual std::string ReadString()
 	{
 		std::string ret = (const char*)(data + offset);
 		offset += ret.length() + 1;
 		return ret;
 	}
 
-	void ReadBytes(uint8_t* bytes, size_t size)
+	virtual void ReadBytes(uint8_t* bytes, size_t size)
 	{
 		std::memcpy(bytes, data + offset, size);
 		offset += size;
 	}
 
-	uint8_t ReadByte()
+	virtual uint8_t ReadByte()
 	{
 		uint8_t ret = *(data + offset);
 		offset += 1;
@@ -115,9 +102,9 @@ public:
 	template<typename Type>
 	Type ReadNumber()
 	{
-		Type ret = *(Type*)(data + offset);
-		offset += sizeof(Type);
+		Type ret = 0;
 		uint8_t* ptr = (uint8_t*)&ret;
+		ReadBytes(ptr, sizeof(Type));
 		if (byteOrder == ByteOrder_BigEndian) std::reverse(ptr, ptr + sizeof(Type));
 		return ret;
 	}

@@ -8,4 +8,5 @@ void ObjectInfo::Read(DataReader& reader)
 	typeID = reader.ReadNumber<int32_t>();
 	classID = reader.ReadNumber<int16_t>();
 	reader.ReadNumber<int16_t>(); //
+	reader.ReadNumber<int32_t>();
 }

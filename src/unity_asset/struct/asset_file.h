@@ -13,6 +13,7 @@
 class AssetFile
 {
 public:
+	std::string name;
 	AssetHeader header;
 	AssetMetaData metaData;
 

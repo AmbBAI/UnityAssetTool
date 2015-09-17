@@ -13,7 +13,7 @@ void AssetMetaData::Read(DataReader& reader, int format)
 	{
 		uint64_t pathID = 0LL;
 		if (format > 13)
-			pathID = reader.ReadNumber<uint64_t>();
+			pathID = (uint64_t)reader.ReadNumber<uint64_t>();
 		else
 			pathID = (uint64_t)reader.ReadNumber<uint32_t>();
 

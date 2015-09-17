@@ -12,6 +12,7 @@
 
 class AssetMetaData
 {
+public:
 	TypeTree typeTree;
 	std::map<uint64_t, ObjectInfo> objectInfoMap;
 
