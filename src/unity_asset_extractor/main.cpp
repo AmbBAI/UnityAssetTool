@@ -6,7 +6,7 @@
 
 int main()
 {
-	FileReader fileReader("test4.6.assetbundle");
+	FileReader fileReader("test5.1.assetbundle");
 
 	AssetbundleReader assertbundleReader;
 	assertbundleReader.ReadHeader(fileReader);
@@ -17,15 +17,17 @@ int main()
 
 	DataReader dataReader;
 	if (assertbundleReader.header.IsCompressed())
-		dataReader = DataReader::Decompress(content);
+		dataReader = content.Decompress();
 	else
 		dataReader = std::move(content);
 	content.Close();
 
 	auto assetFileList = assertbundleReader.ReadAssetFiles(dataReader);
-	for (auto& assetFile : assetFileList)
+	for (auto& keyValPair : assetFileList)
 	{
-		puts(assetFile.name.c_str());
-		//assetFile.metaData.objectInfoMap;
+		auto& entryInfo = keyValPair.first;
+		auto& assetFile = keyValPair.second;
+		puts(entryInfo.name.c_str());
+		assetFile.WriteObjectsToFile(entryInfo.name + " - ", dataReader, entryInfo.offset);
 	}
 }

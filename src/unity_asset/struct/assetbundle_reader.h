@@ -20,7 +20,7 @@ public:
 	AssetbundleReader() = default;
 
 	bool ReadHeader(DataReader& reader);
-	std::vector<AssetFile> ReadAssetFiles(DataReader& reader);
+	std::vector<std::pair<AssetbundleEntryInfo, AssetFile> > ReadAssetFiles(DataReader& reader);
 };
 
 #endif //!_ASSETBUNDLE_READER_H_

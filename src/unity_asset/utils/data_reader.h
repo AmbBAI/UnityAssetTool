@@ -5,6 +5,7 @@
 #include <string>
 #include <cassert>
 #include <memory>
+#include "file_writer.h"
 extern "C" {
 #include "LzmaDec.h"
 }
@@ -22,35 +23,6 @@ protected:
 	size_t offset = 0;
 	size_t size = 0;
 	ByteOrder byteOrder = ByteOrder_LittleEndian;
-
-public:
-	static DataReader Decompress(DataReader& dataReader)
-	{
-		dataReader.SetByteOrder(ByteOrder_LittleEndian);
-		uint8_t* propData = new uint8_t[LZMA_PROPS_SIZE];
-		dataReader.ReadBytes(propData, LZMA_PROPS_SIZE);
-		SizeT uncompressSize = (SizeT)dataReader.ReadNumber<uint32_t>();
-		uint8_t* uncompressData = new uint8_t[uncompressSize];
-		dataReader.ReadNumber<uint32_t>(); // finish mode?
-		SizeT compressedSize = (SizeT)(dataReader.size - dataReader.offset);
-		ELzmaStatus lzmaStatus = LZMA_STATUS_NOT_SPECIFIED;
-
-		static ISzAlloc lzmaAlloc = {
-			[](void* p, size_t size) { p = p; return malloc(size); },
-			[](void* p, void *address) { p = p; free(address); } };
-
-		LzmaDecode(
-			uncompressData, (SizeT*)&uncompressSize,
-			dataReader.data + dataReader.offset, (SizeT*)&compressedSize,
-			propData, LZMA_PROPS_SIZE,
-			LZMA_FINISH_ANY, &lzmaStatus, &lzmaAlloc);
-
-		DataReader retReader;
-		retReader.data = uncompressData;
-		retReader.offset = 0;
-		retReader.size = uncompressSize;
-		return retReader;
-	}
 
 public:
 	DataReader() = default;
@@ -71,6 +43,8 @@ public:
 		offset = 0;
 		size = 0;
 	}
+
+	bool isValid() { return data != nullptr; }
 
 	void SetByteOrder(ByteOrder byteOrder) { this->byteOrder = byteOrder; }
 	ByteOrder GetByteOrder() const { return byteOrder; }
@@ -129,6 +103,40 @@ public:
 		other.byteOrder = ByteOrder_LittleEndian;
 
 		return *this;
+	}
+
+	DataReader Decompress()
+	{
+		SetByteOrder(ByteOrder_LittleEndian);
+		uint8_t propData[LZMA_PROPS_SIZE];
+		ReadBytes(propData, LZMA_PROPS_SIZE);
+		SizeT uncompressSize = (SizeT)ReadNumber<uint32_t>();
+		uint8_t* uncompressData = new uint8_t[uncompressSize];
+		ReadNumber<uint32_t>(); // finish mode?
+		SizeT compressedSize = (SizeT)(size - offset);
+		ELzmaStatus lzmaStatus = LZMA_STATUS_NOT_SPECIFIED;
+
+		static ISzAlloc lzmaAlloc = {
+			[](void* p, size_t size) { p = p; return malloc(size); },
+			[](void* p, void *address) { p = p; free(address); } };
+
+		LzmaDecode(
+			uncompressData, (SizeT*)&uncompressSize,
+			data + offset, (SizeT*)&compressedSize,
+			propData, LZMA_PROPS_SIZE,
+			LZMA_FINISH_ANY, &lzmaStatus, &lzmaAlloc);
+
+		return DataReader(uncompressData, uncompressSize);
+	}
+
+	bool WriteFile(std::string file, size_t offset, size_t size)
+	{
+		FileWriter fileWriter(file);
+		if (!fileWriter.isValid()) return false;
+
+		fileWriter.WriteBytes(data + offset, size);
+		fileWriter.Close();
+		return true;
 	}
 };
 

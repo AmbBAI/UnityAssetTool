@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include "struct/unity_version.h"
 #include "utils/data_reader.h"
 
 class AssetbundleHeader

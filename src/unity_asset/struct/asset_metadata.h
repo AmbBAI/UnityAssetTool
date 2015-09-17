@@ -6,7 +6,6 @@
 #include <vector>
 #include <utility>
 #include "utils/data_reader.h"
-#include "struct/unity_version.h"
 #include "struct/type_tree.h"
 #include "struct/object_info.h"
 

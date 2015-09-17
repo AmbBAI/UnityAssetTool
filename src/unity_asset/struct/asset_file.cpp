@@ -9,3 +9,14 @@ void AssetFile::Read(DataReader& reader)
 	size_t endOffset = reader.Tell();
 
 }
+
+void AssetFile::WriteObjectsToFile(std::string& folder, DataReader& reader, size_t assetFileOffset)
+{
+	for (auto& keyValPair : metaData.objectInfoMap)
+	{
+		std::string path =  folder + std::to_string(keyValPair.first);
+		auto& objectInfo = keyValPair.second;
+		int objectOffset = assetFileOffset + header.dataOffset + objectInfo.offset;
+		reader.WriteFile(path, objectOffset, objectInfo.length);
+	}
+}

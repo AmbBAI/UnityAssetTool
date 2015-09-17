@@ -18,7 +18,7 @@ void TypeNode::Read(DataReader& reader, int format)
 //		types.emplace_back(type);
 	}
 
-	uint8_t* stringTable = new uint8_t[stringTableLen];
-	reader.ReadBytes(stringTable, stringTableLen);
+	std::vector<uint8_t> stringTable(stringTableLen, '\0');
+	reader.ReadBytes(&stringTable[0], stringTableLen);
 
 }

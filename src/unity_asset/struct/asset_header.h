@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include "struct/version_info.h"
 #include "utils/data_reader.h"
 
 class AssetHeader

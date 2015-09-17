@@ -39,6 +39,8 @@ public:
 		DataReader::Close();
 	}
 
+	bool isValid() { return filePtr != nullptr; }
+
 	void Seek(size_t offset) override
 	{
 		DataReader::Seek(offset);

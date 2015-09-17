@@ -7,7 +7,7 @@ bool AssetbundleReader::ReadHeader(DataReader& reader)
 	return header.IsSignatureValid();
 }
 
-std::vector<AssetFile> AssetbundleReader::ReadAssetFiles(DataReader& reader)
+std::vector<std::pair<AssetbundleEntryInfo, AssetFile> > AssetbundleReader::ReadAssetFiles(DataReader& reader)
 {
 	size_t dataOffset = reader.Tell();
 
@@ -25,14 +25,13 @@ std::vector<AssetFile> AssetbundleReader::ReadAssetFiles(DataReader& reader)
 	//uint8_t unknown1 = dataReader.ReadByte();
 	//uint8_t unknown2 = dataReader.ReadByte();
 	
-	std::vector<AssetFile> assetFileList;
+	std::vector<std::pair<AssetbundleEntryInfo, AssetFile> > assetFileList;
 	for (auto entryInfo : entryInfos)
 	{
 		reader.Seek(dataOffset + entryInfo.offset);
 		AssetFile assetFile;
-		assetFile.name = entryInfo.name;
 		assetFile.Read(reader);
-		assetFileList.emplace_back(assetFile);
+		assetFileList.emplace_back(entryInfo, assetFile);
 	}
 
 	return assetFileList;
