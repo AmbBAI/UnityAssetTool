@@ -12,8 +12,6 @@ class FileReader : public DataReader
 	FILE* filePtr = nullptr;
 
 public:
-	static const int gReadStringBufferSize = 1024;
-
 	FileReader() = default;
 	explicit FileReader(const std::string& file)
 	{
@@ -50,20 +48,18 @@ public:
 
 	std::string ReadString() override
 	{
-		static char buffer[gReadStringBufferSize];
-		//int len = fscanf(filePtr, "%[^\0]s\0", buffer);
-		//buffer[len] = '\0';
+		std::vector<char> buffer;
 
 		int len = 0;
 		while (true)
 		{
-			buffer[len] = fgetc(filePtr);
-			if (buffer[len] == '\0') break;
+			char c = fgetc(filePtr);
+			buffer.emplace_back(c);
+			if (c == '\0') break;
 			++len;
-			assert(len < gReadStringBufferSize);
 		}
 
-		std::string ret = buffer;
+		std::string ret = &buffer[0];
 		offset = ftell(filePtr);
 		return ret;
 	}

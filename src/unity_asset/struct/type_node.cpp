@@ -1,5 +1,9 @@
 #include <cassert>
 #include "type_node.h"
+#include "utils/file_reader.h"
+
+TypeNode::StringTable TypeNode::defaultStringTable;
+
 
 void TypeNode::Read(DataReader& reader, int format)
 {
@@ -8,17 +12,54 @@ void TypeNode::Read(DataReader& reader, int format)
 	numberFields = reader.ReadNumber<int32_t>();
 	stringTableLen = reader.ReadNumber<int32_t>();
 
-	std::vector<Type> types;
+	types.clear();
 	for (int i = 0; i < numberFields; ++i)
 	{
-		uint8_t bytes[24];
-		reader.ReadBytes(bytes, 24);
-//		Type type;
-//		type.Read(reader, format);
-//		types.emplace_back(type);
+		Type type;
+		type.Read(reader, format);
+		types.emplace_back(type);
 	}
 
-	std::vector<uint8_t> stringTable(stringTableLen, '\0');
+	stringTable.clear();
+	stringTable.assign(stringTableLen, '\0');
 	reader.ReadBytes(&stringTable[0], stringTableLen);
 
+	for (int i = 0; i < numberFields; ++i)
+	{
+		if (format > 13)
+		{
+			types[i].type = CheckStringTable(stringTable, types[i].typeOffset);
+			types[i].name = CheckStringTable(stringTable, types[i].nameOffset);
+		}
+	}
+}
+
+
+std::string TypeNode::CheckStringTable(const StringTable& stringTable, int32_t offset)
+{
+	if (defaultStringTable.size() <= 0)
+	{
+		FileReader fileReader("strings.dat");
+		if (fileReader.isValid())
+		{
+			size_t size = fileReader.GetSize();
+			defaultStringTable.assign(size, '\0');
+			fileReader.ReadBytes(&defaultStringTable[0], size);
+		}
+		else printf("strings.dat not found!");
+
+		fileReader.Close();
+	}
+
+	if (offset < 0)
+	{
+		offset = (offset & INT32_MAX);
+		if (defaultStringTable.size() <= offset) return "";
+		return (const char*)&defaultStringTable[offset];
+	}
+	else
+	{
+		if (stringTable.size() <= offset) return "";
+		return (const char*)&stringTable[offset];
+	}
 }

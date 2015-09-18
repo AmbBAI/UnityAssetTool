@@ -10,6 +10,7 @@
 class ObjectInfo
 {
 public:
+	uint64_t pathID = 0;
 	uint32_t offset = 0;
 	uint32_t length = 0;
 	int32_t typeID = 0;
