@@ -76,13 +76,13 @@ public:
 		return ret;
 	}
 
-	template<typename TypeField>
-	TypeField ReadNumber()
+	template<typename Type>
+	Type ReadNumber()
 	{
-		TypeField ret = 0;
+		Type ret = 0;
 		uint8_t* ptr = (uint8_t*)&ret;
-		ReadBytes(ptr, sizeof(TypeField));
-		if (byteOrder != systemByteOrder) std::reverse(ptr, ptr + sizeof(TypeField));
+		ReadBytes(ptr, sizeof(Type));
+		if (byteOrder != systemByteOrder) std::reverse(ptr, ptr + sizeof(Type));
 		return ret;
 	}
 

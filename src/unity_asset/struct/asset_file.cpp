@@ -10,7 +10,7 @@ void AssetFile::Read(DataReader& reader)
 
 }
 
-void AssetFile::WriteObjectsToFile(std::string& folder, DataReader& reader, size_t assetFileOffset)
+void AssetFile::WriteObjectsToFile(const std::string& folder, DataReader& reader, size_t assetFileOffset)
 {
 	for (auto& keyValPair : metaData.objectInfoMap)
 	{
