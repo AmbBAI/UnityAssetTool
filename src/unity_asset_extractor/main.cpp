@@ -27,7 +27,11 @@ int main()
 	{
 		auto& entryInfo = keyValPair.first;
 		auto& assetFile = keyValPair.second;
-		puts(entryInfo.name.c_str());
-		assetFile.WriteObjectsToFile(entryInfo.name + " - ", dataReader, entryInfo.offset);
+		dataReader.Seek(entryInfo.offset);
+		assetFile.LoadAllObjects(dataReader, [&entryInfo](const ObjectInfo& objectInfo, DataReader& objectReader)
+		{
+			std::string path = entryInfo.name + " - " + std::to_string(objectInfo.pathID);
+			objectReader.WriteFile(path, objectReader.Tell(), objectInfo.length);
+		});
 	}
 }

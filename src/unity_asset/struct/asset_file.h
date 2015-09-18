@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <utility>
+#include <functional>
 #include "utils/data_reader.h"
 #include "struct/asset_header.h"
 #include "struct/asset_metadata.h"
@@ -21,7 +22,8 @@ public:
 
 	void Read(DataReader& reader);
 	
-	void WriteObjectsToFile(const std::string& folder, DataReader& reader, size_t assetFileOffset = 0);
+	bool LoadObject(uint64_t objectID, DataReader& reader, std::function<void(const ObjectInfo&, DataReader&)> func);
+	void LoadAllObjects(DataReader& reader, std::function<void(const ObjectInfo&, DataReader&)> func);
 };
 
 #endif //!_ASSET_FILE_H_

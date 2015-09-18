@@ -25,9 +25,6 @@ protected:
 	ByteOrder byteOrder = ByteOrder_LittleEndian;
 
 public:
-	static const ByteOrder systemByteOrder = ((const uint8_t&)0x0001 != 0) ? ByteOrder_LittleEndian : ByteOrder_BigEndian;
-
-public:
 	DataReader() = default;
 	explicit DataReader(uint8_t* dataBuffer, size_t size)
 	{
@@ -79,6 +76,10 @@ public:
 	template<typename Type>
 	Type ReadNumber()
 	{
+		static uint16_t _byteOrderMagic = 0x0102;
+		static ByteOrder systemByteOrder =
+			(*(uint8_t*)&_byteOrderMagic != 0x01) ? ByteOrder_LittleEndian : ByteOrder_BigEndian;
+
 		Type ret = 0;
 		uint8_t* ptr = (uint8_t*)&ret;
 		ReadBytes(ptr, sizeof(Type));
