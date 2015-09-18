@@ -10,9 +10,6 @@ void AssetHeader::Read(DataReader& reader)
 	dataOffset = reader.ReadNumber<uint32_t>();
 	if (format >= 9)
 	{
-		isBigEndian = (reader.ReadByte() == 0);
-		uint8_t unknown0 = reader.ReadByte();
-		uint8_t unknown1 = reader.ReadByte();
-		uint8_t unknown2 = reader.ReadByte();
+		uint32_t unknown0 = reader.ReadNumber<uint32_t>();
 	}
 }

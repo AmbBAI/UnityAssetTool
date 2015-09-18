@@ -20,7 +20,7 @@ public:
 	AssetFile() = default;
 
 	void Read(DataReader& reader);
-
+	
 	void WriteObjectsToFile(std::string& folder, DataReader& reader, size_t assetFileOffset = 0);
 };
 

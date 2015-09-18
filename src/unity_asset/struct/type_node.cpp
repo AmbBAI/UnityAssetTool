@@ -12,12 +12,12 @@ void TypeNode::Read(DataReader& reader, int format)
 	numberFields = reader.ReadNumber<int32_t>();
 	stringTableLen = reader.ReadNumber<int32_t>();
 
-	types.clear();
+	typeFields.clear();
 	for (int i = 0; i < numberFields; ++i)
 	{
-		Type type;
-		type.Read(reader, format);
-		types.emplace_back(type);
+		TypeField typeField;
+		typeField.Read(reader, format);
+		typeFields.emplace_back(typeField);
 	}
 
 	stringTable.clear();
@@ -28,8 +28,8 @@ void TypeNode::Read(DataReader& reader, int format)
 	{
 		if (format > 13)
 		{
-			types[i].type = CheckStringTable(stringTable, types[i].typeOffset);
-			types[i].name = CheckStringTable(stringTable, types[i].nameOffset);
+			typeFields[i].type = CheckStringTable(stringTable, typeFields[i].typeOffset);
+			typeFields[i].name = CheckStringTable(stringTable, typeFields[i].nameOffset);
 		}
 	}
 }
@@ -54,12 +54,12 @@ std::string TypeNode::CheckStringTable(const StringTable& stringTable, int32_t o
 	if (offset < 0)
 	{
 		offset = (offset & INT32_MAX);
-		if (defaultStringTable.size() <= offset) return "";
+		if (defaultStringTable.size() <= (size_t)offset) return "";
 		return (const char*)&defaultStringTable[offset];
 	}
 	else
 	{
-		if (stringTable.size() <= offset) return "";
+		if (stringTable.size() <= (size_t)offset) return "";
 		return (const char*)&stringTable[offset];
 	}
 }

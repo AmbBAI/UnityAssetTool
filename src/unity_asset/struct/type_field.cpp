@@ -1,7 +1,7 @@
 #include <cassert>
-#include "type.h"
+#include "type_field.h"
 
-void Type::Read(DataReader& reader, int format)
+void TypeField::Read(DataReader& reader, int format)
 {
 	reader.SetByteOrder(ByteOrder_LittleEndian);
 

@@ -25,6 +25,9 @@ protected:
 	ByteOrder byteOrder = ByteOrder_LittleEndian;
 
 public:
+	static const ByteOrder systemByteOrder = ((const uint8_t&)0x0001 != 0) ? ByteOrder_LittleEndian : ByteOrder_BigEndian;
+
+public:
 	DataReader() = default;
 	explicit DataReader(uint8_t* dataBuffer, size_t size)
 	{
@@ -73,13 +76,13 @@ public:
 		return ret;
 	}
 
-	template<typename Type>
-	Type ReadNumber()
+	template<typename TypeField>
+	TypeField ReadNumber()
 	{
-		Type ret = 0;
+		TypeField ret = 0;
 		uint8_t* ptr = (uint8_t*)&ret;
-		ReadBytes(ptr, sizeof(Type));
-		if (byteOrder == ByteOrder_BigEndian) std::reverse(ptr, ptr + sizeof(Type));
+		ReadBytes(ptr, sizeof(TypeField));
+		if (byteOrder != systemByteOrder) std::reverse(ptr, ptr + sizeof(TypeField));
 		return ret;
 	}
 

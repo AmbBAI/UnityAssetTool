@@ -1,5 +1,5 @@
-#ifndef _TYPE_H_
-#define _TYPE_H_
+#ifndef _TYPE_FIELD_H_
+#define _TYPE_FIELD_H_
 
 #include <cstdint>
 #include <string>
@@ -8,7 +8,7 @@
 #include <utility>
 #include "utils/data_reader.h"
 
-class Type
+class TypeField
 {
 public:
 	uint16_t version = 0;
@@ -23,9 +23,9 @@ public:
 	uint32_t metaFlag = 0;
 
 public:
-	Type() = default;
+	TypeField() = default;
 
 	void Read(DataReader& reader, int format);
 };
 
-#endif //!_TYPE_H_
+#endif //!_TYPE_FIELD_H_

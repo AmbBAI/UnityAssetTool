@@ -10,12 +10,10 @@
 class AssetHeader
 {
 public:
-	//VersionInfo versionInfo;
-	int32_t format;
+	int32_t format = 0;
 	int32_t metadataSize = 0;
-	int fileSize = 0;
-	int dataOffset = 0;
-	bool isBigEndian = false;
+	uint32_t fileSize = 0;
+	uint32_t dataOffset = 0;
 
 public:
 	AssetHeader() = default;

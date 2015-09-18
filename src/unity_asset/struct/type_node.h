@@ -7,7 +7,7 @@
 #include <map>
 #include <utility>
 #include "utils/data_reader.h"
-#include "struct/type.h"
+#include "struct/type_field.h"
 
 class TypeNode
 {
@@ -17,7 +17,7 @@ public:
 	int32_t stringTableLen = 0;
 	StringTable stringTable;
 	static StringTable defaultStringTable;
-	std::vector<Type> types;
+	std::vector<TypeField> typeFields;
 
 public:
 	TypeNode() = default;
