@@ -25,6 +25,7 @@ solution "UnityAssetTool"
     }
     includedirs { "src/lzma/" }
     libdirs {"lib/"}
+    defines {"_7ZIP_ST"}
 
   local lib_proj_dir = ""
   project "unity_asset"

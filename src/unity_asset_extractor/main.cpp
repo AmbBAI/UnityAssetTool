@@ -6,7 +6,7 @@
 
 int main()
 {
-	FileReader fileReader("test5.1.assetbundle");
+	FileReader fileReader("test5.1_lzma.assetbundle");
 
 	AssetbundleReader assertbundleReader;
 	assertbundleReader.ReadHeader(fileReader);
