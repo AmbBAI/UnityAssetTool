@@ -6,9 +6,9 @@
 #include <cassert>
 #include <memory>
 #include "file_writer.h"
-extern "C" {
+
 #include "LzmaDec.h"
-}
+#include "Alloc.h"
 
 enum ByteOrder
 {
@@ -119,15 +119,11 @@ public:
 		SizeT compressedSize = (SizeT)(size - offset);
 		ELzmaStatus lzmaStatus = LZMA_STATUS_NOT_SPECIFIED;
 
-		static ISzAlloc lzmaAlloc = {
-			[](void* p, size_t size) { p = p; return malloc(size); },
-			[](void* p, void *address) { p = p; free(address); } };
-
 		LzmaDecode(
 			uncompressData, (SizeT*)&uncompressSize,
 			data + offset, (SizeT*)&compressedSize,
 			propData, LZMA_PROPS_SIZE,
-			LZMA_FINISH_ANY, &lzmaStatus, &lzmaAlloc);
+			LZMA_FINISH_ANY, &lzmaStatus, &g_Alloc);
 
 		return DataReader(uncompressData, uncompressSize);
 	}

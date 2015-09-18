@@ -16,7 +16,7 @@ solution "UnityAssetTool"
 
   project "lzma"
     kind "StaticLib"
-    language "C"
+    language "C++"
     targetdir "lib/"
     
     files {
