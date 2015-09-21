@@ -1,11 +1,7 @@
 #ifndef _TYPE_FIELD_H_
 #define _TYPE_FIELD_H_
 
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <map>
-#include <utility>
+#include "utils/header.h"
 #include "utils/data_reader.h"
 
 class TypeField

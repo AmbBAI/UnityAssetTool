@@ -1,10 +1,7 @@
 #ifndef _ASSETBUNDLE_READER_H_
 #define _ASSETBUNDLE_READER_H_
 
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <utility>
+#include "utils/header.h"
 #include "utils/data_reader.h"
 #include "utils/file_reader.h"
 #include "struct/assetbundle_header.h"

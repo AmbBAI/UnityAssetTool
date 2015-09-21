@@ -1,37 +1,20 @@
-#include <cstdint>
-#include <cstdlib>
-#include <string>
-#include <memory>
-#include "struct/assetbundle_reader.h"
+#include "utils/file_reader.h"
+#include "struct/asset_file.h"
 
 int main()
 {
-	FileReader fileReader("test5.1_lzma.assetbundle");
+	BaseClass::LoadDefaultStringTable("strings.dat");
 
-	AssetbundleReader assertbundleReader;
-	assertbundleReader.ReadHeader(fileReader);
-	
-	auto headerSize = assertbundleReader.header.headerSize;
-	DataReader content = std::move(fileReader.ReadData(headerSize));
-	fileReader.Close();
+	std::string file = "test4.6.assets";
+	FileReader fileReader(file);
 
-	DataReader dataReader;
-	if (assertbundleReader.header.IsCompressed())
-		dataReader = content.Decompress();
-	else
-		dataReader = std::move(content);
-	content.Close();
+	AssetFile assetFile;
+	assetFile.Read(fileReader);
 
-	auto assetFileList = assertbundleReader.ReadAssetFiles(dataReader);
-	for (auto& keyValPair : assetFileList)
+	fileReader.Seek(0);
+	assetFile.LoadAllObjects(fileReader, [&file](const ObjectInfo& objectInfo, DataReader& objectReader)
 	{
-		auto& entryInfo = keyValPair.first;
-		auto& assetFile = keyValPair.second;
-		dataReader.Seek(entryInfo.offset);
-		assetFile.LoadAllObjects(dataReader, [&entryInfo](const ObjectInfo& objectInfo, DataReader& objectReader)
-		{
-			std::string path = entryInfo.name + " - " + std::to_string(objectInfo.pathID);
-			objectReader.WriteFile(path, objectReader.Tell(), objectInfo.length);
-		});
-	}
+		std::string path = "output/" + file + " - " + std::to_string(objectInfo.pathID);
+		objectReader.WriteFile(path, objectReader.Tell(), objectInfo.length);
+	});
 }

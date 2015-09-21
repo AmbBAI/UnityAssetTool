@@ -1,9 +1,7 @@
 #ifndef _ASSETBUNDLE_ENTRY_INFO_H_
 #define _ASSETBUNDLE_ENTRY_INFO_H_
 
-#include <cstdint>
-#include <string>
-#include <utility>
+#include "utils/header.h"
 #include "utils/data_reader.h"
 
 struct AssetbundleEntryInfo

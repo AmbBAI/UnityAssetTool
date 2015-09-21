@@ -1,10 +1,7 @@
 #ifndef _ASSET_METADATA_H_
 #define _ASSET_METADATA_H_
 
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <utility>
+#include "utils/header.h"
 #include "utils/data_reader.h"
 #include "struct/type_tree.h"
 #include "struct/object_info.h"

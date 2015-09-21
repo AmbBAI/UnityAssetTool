@@ -1,4 +1,3 @@
-#include <cassert>
 #include "asset_header.h"
 
 void AssetHeader::Read(DataReader& reader)

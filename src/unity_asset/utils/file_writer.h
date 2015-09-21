@@ -1,10 +1,7 @@
 #ifndef _FILE_WRITER_H_
 #define _FILE_WRITER_H_
 
-#include <cstdint>
-#include <string>
-#include <cassert>
-#include <memory>
+#include "utils/header.h"
 #include "utils/data_reader.h"
 
 class FileWriter

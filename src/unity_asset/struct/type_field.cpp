@@ -1,4 +1,3 @@
-#include <cassert>
 #include "type_field.h"
 
 void TypeField::Read(DataReader& reader, int format)

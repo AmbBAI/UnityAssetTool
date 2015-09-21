@@ -1,10 +1,7 @@
 #ifndef _ASSET_HEADER_H_
 #define _ASSET_HEADER_H_
 
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <utility>
+#include "utils/header.h"
 #include "utils/data_reader.h"
 
 class AssetHeader

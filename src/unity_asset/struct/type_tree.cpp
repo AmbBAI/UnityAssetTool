@@ -1,4 +1,3 @@
-#include <cassert>
 #include "type_tree.h"
 
 void TypeTree::Read(DataReader& reader, int format)
@@ -17,21 +16,9 @@ void TypeTree::Read(DataReader& reader, int format)
 		int32_t classID = reader.ReadNumber<int32_t>();
 		BaseClass baseClass;
 		baseClass.classID = classID;
-
-		if (format > 13)
-		{
-			if (classID < 0) reader.ReadBytes(baseClass.scriptID, 16);
-			reader.ReadBytes(baseClass.oldTypeHash, 16);
-		}
-
-		if (embedded)
-		{
-			baseClass.typeTree.Read(reader, format);
-		}
-
+		baseClass.Read(reader, format, embedded);
 		typeMap[classID] = baseClass;
 	}
-	embedded = (numberBaseClasses != 0);
 
 	if (format < 13)
 	{

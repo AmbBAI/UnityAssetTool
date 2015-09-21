@@ -1,12 +1,7 @@
 #ifndef _ASSET_FILE_H_
 #define _ASSET_FILE_H_
 
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <map>
-#include <utility>
-#include <functional>
+#include "utils/header.h"
 #include "utils/data_reader.h"
 #include "struct/asset_header.h"
 #include "struct/asset_metadata.h"

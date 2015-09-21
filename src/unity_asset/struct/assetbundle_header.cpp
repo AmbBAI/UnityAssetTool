@@ -1,4 +1,3 @@
-#include <cassert>
 #include "assetbundle_header.h"
 
 const std::string AssetbundleHeader::signatureWeb = "UnityWeb";

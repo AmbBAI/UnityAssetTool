@@ -1,10 +1,7 @@
 #ifndef _FILE_READER_H_
 #define _FILE_READER_H_
 
-#include <cstdint>
-#include <string>
-#include <cassert>
-#include <memory>
+#include "utils/header.h"
 #include "utils/data_reader.h"
 
 class FileReader : public DataReader
@@ -98,6 +95,16 @@ public:
 		other.byteOrder = ByteOrder_LittleEndian;
 
 		return *this;
+	}
+
+	bool WriteFile(std::string file, size_t offset, size_t size) override
+	{
+		data = new uint8_t[size];
+		ReadBytes(data, size);
+		bool result = DataReader::WriteFile(file, 0, size);
+		delete data;
+		data = nullptr;
+		return result;
 	}
 
 	DataReader ReadData(size_t offset = 0, size_t size = 0)

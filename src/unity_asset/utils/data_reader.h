@@ -1,11 +1,8 @@
 #ifndef _DATA_READER_H_
 #define _DATA_READER_H_
 
-#include <cstdint>
-#include <string>
-#include <cassert>
-#include <memory>
-#include "file_writer.h"
+#include "utils/header.h"
+#include "utils/file_writer.h"
 
 #include "LzmaDec.h"
 #include "Alloc.h"
@@ -52,6 +49,7 @@ public:
 	virtual size_t GetSize() const { return size; }
 	virtual size_t Tell() const { return offset; }
 	virtual void Seek(size_t offset) { this->offset = offset; }
+	virtual void Align(size_t align) { this->Seek(((offset + align - 1)/ align) * align); }
 
 	virtual std::string ReadString()
 	{
@@ -129,7 +127,7 @@ public:
 		return DataReader(uncompressData, uncompressSize);
 	}
 
-	bool WriteFile(std::string file, size_t offset, size_t size)
+	virtual bool WriteFile(std::string file, size_t offset, size_t size)
 	{
 		FileWriter fileWriter(file);
 		if (!fileWriter.isValid()) return false;

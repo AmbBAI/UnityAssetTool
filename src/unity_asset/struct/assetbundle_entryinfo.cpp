@@ -1,4 +1,3 @@
-#include <cassert>
 #include "assetbundle_entryinfo.h"
 
 int AssetbundleEntryInfo::Read(DataReader& reader)

@@ -1,4 +1,3 @@
-#include <cassert>
 #include "assetbundle_reader.h"
 
 bool AssetbundleReader::ReadHeader(DataReader& reader)

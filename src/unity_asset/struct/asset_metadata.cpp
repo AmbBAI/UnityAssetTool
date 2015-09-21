@@ -1,4 +1,3 @@
-#include <cassert>
 #include "asset_metadata.h"
 
 void AssetMetaData::Read(DataReader& reader, int format)
@@ -8,6 +7,7 @@ void AssetMetaData::Read(DataReader& reader, int format)
 	typeTree.Read(reader, format);
 
 	int32_t objCount = reader.ReadNumber<int32_t>();
+	if (format > 13) reader.Align(4);
 	objectInfoMap.clear();
 	for (int i = 0; i < objCount; ++i)
 	{
