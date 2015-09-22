@@ -14,6 +14,7 @@ void TypeField::Read(DataReader& reader, int format)
 		size = reader.ReadNumber<uint32_t>();
 		index = reader.ReadNumber<uint32_t>();
 		metaFlag = reader.ReadNumber<uint32_t>();
+		printf("%u\n", metaFlag);
 	}
 	else
 	{

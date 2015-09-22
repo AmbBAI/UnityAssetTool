@@ -6,6 +6,6 @@ void ObjectInfo::Read(DataReader& reader, int format)
 	length = reader.ReadNumber<uint32_t>();
 	typeID = reader.ReadNumber<int32_t>();
 	classID = reader.ReadNumber<int16_t>();
-	unknown0 = reader.ReadNumber<int16_t>(); // -1
+	unknown0 = reader.ReadNumber<int16_t>(); // 9:0 15:-1
 	if (format > 13) unknown1 = reader.ReadNumber<int32_t>(); //0
 }

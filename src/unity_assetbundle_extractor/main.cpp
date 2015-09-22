@@ -4,7 +4,7 @@ int main()
 {
 	BaseClass::LoadDefaultStringTable("strings.dat");
 
-	FileReader fileReader("test5.1_lzma.assetbundle");
+	FileReader fileReader("test5.1.assetbundle");
 
 	AssetbundleReader assertbundleReader;
 	assertbundleReader.ReadHeader(fileReader);
@@ -29,7 +29,9 @@ int main()
 		assetFile.LoadAllObjects(dataReader, [&entryInfo](const ObjectInfo& objectInfo, DataReader& objectReader)
 		{
 			std::string path = "output/" + entryInfo.name + " - " + std::to_string(objectInfo.pathID);
-			objectReader.WriteFile(path, objectReader.Tell(), objectInfo.length);
+			FileWriter writer(path);
+			objectReader.WriteFile(writer, objectReader.Tell(), objectInfo.length);
+			writer.Close();
 		});
 	}
 }

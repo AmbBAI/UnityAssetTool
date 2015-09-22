@@ -7,12 +7,6 @@
 #include "LzmaDec.h"
 #include "Alloc.h"
 
-enum ByteOrder
-{
-	ByteOrder_LittleEndian,
-	ByteOrder_BigEndian,
-};
-
 class DataReader
 {
 protected:
@@ -49,6 +43,7 @@ public:
 	virtual size_t GetSize() const { return size; }
 	virtual size_t Tell() const { return offset; }
 	virtual void Seek(size_t offset) { this->offset = offset; }
+	virtual void Skip(size_t count) { this->offset = this->offset + count; }
 	virtual void Align(size_t align) { this->Seek(((offset + align - 1)/ align) * align); }
 
 	virtual std::string ReadString()
@@ -127,13 +122,10 @@ public:
 		return DataReader(uncompressData, uncompressSize);
 	}
 
-	virtual bool WriteFile(std::string file, size_t offset, size_t size)
+	virtual bool WriteFile(FileWriter& writer, size_t offset, size_t size)
 	{
-		FileWriter fileWriter(file);
-		if (!fileWriter.isValid()) return false;
-
-		fileWriter.WriteBytes(data + offset, size);
-		fileWriter.Close();
+		if (!writer.isValid()) return false;
+		writer.WriteBytes(data + offset, size);
 		return true;
 	}
 };

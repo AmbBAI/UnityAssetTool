@@ -7,6 +7,7 @@
 class FileWriter
 {
 	FILE* filePtr = nullptr;
+	ByteOrder byteOrder = ByteOrder_LittleEndian;
 
 public:
 	FileWriter() = default;
@@ -42,6 +43,18 @@ public:
 	void WriteByte(uint8_t byte)
 	{
 		fputc((int)byte, filePtr);
+	}
+
+	template<typename Type>
+	void WriteNumber(Type number)
+	{
+		static uint16_t _byteOrderMagic = 0x0102;
+		static ByteOrder systemByteOrder =
+			(*(uint8_t*)&_byteOrderMagic != 0x01) ? ByteOrder_LittleEndian : ByteOrder_BigEndian;
+
+		uint8_t* ptr = (uint8_t*)&number;
+		if (byteOrder != systemByteOrder) std::reverse(ptr, ptr + sizeof(Type));
+		WriteBytes(ptr, sizeof(Type));
 	}
 
 	FileWriter& operator =(FileWriter&& other)

@@ -12,4 +12,10 @@
 #include <functional>
 
 
+enum ByteOrder
+{
+	ByteOrder_LittleEndian,
+	ByteOrder_BigEndian,
+};
+
 #endif // _HEADER_H_

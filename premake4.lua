@@ -84,3 +84,22 @@ solution "UnityAssetTool"
 
     configuration "macosx"
       buildoptions { "-std=c++11", "-Wno-deprecated-declarations" }
+
+  project "test"
+    kind "ConsoleApp"
+    targetdir "bin/"
+    
+    files {
+      "src/test/**.h",
+      "src/test/**.cpp",
+    }
+    
+    includedirs { "src/lzma/", "src/unity_asset/", "src/test/" }
+    libdirs {"lib/"}
+    links { "lzma", "unity_asset" }
+
+    configuration "windows"
+      defines { "_CRT_SECURE_NO_WARNINGS" }
+
+    configuration "macosx"
+      buildoptions { "-std=c++11", "-Wno-deprecated-declarations" }

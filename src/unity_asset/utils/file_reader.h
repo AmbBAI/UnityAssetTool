@@ -41,7 +41,11 @@ public:
 		DataReader::Seek(offset);
 		fseek(filePtr, this->offset, SEEK_SET);
 	}
-
+	void Skip(size_t count) override
+	{
+		DataReader::Skip(count);
+		fseek(filePtr, this->offset, SEEK_SET);
+	}
 
 	std::string ReadString() override
 	{
@@ -97,11 +101,12 @@ public:
 		return *this;
 	}
 
-	bool WriteFile(std::string file, size_t offset, size_t size) override
+	bool WriteFile(FileWriter& writer, size_t offset, size_t size) override
 	{
+		if (!writer.isValid()) return false;
 		data = new uint8_t[size];
 		ReadBytes(data, size);
-		bool result = DataReader::WriteFile(file, 0, size);
+		bool result = DataReader::WriteFile(writer, 0, size);
 		delete data;
 		data = nullptr;
 		return result;
