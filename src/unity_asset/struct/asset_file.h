@@ -15,7 +15,8 @@ public:
 public:
 	AssetFile() = default;
 
-	void Read(DataReader& reader);
+	bool Read(DataReader& reader);
+	bool IsValid() { return header.format == 9 || header.format == 15; }
 	
 	bool LoadObject(uint64_t objectID, DataReader& reader, std::function<void(const ObjectInfo&, DataReader&)> func);
 	void LoadAllObjects(DataReader& reader, std::function<void(const ObjectInfo&, DataReader&)> func);

@@ -3,39 +3,89 @@
 #include "extractor/extractor.h"
 #include "extractor/textasset_extractor.h"
 
-int main()
+#include "boost/filesystem.hpp"
+using namespace boost;
+
+int main(int argc, char *argv)
 {
 	BaseClass::LoadDefaultStringTable("strings.dat");
-
-	std::string file = "test5.1.assets";
-	FileReader fileReader(file);
-	if (!fileReader.isValid())
-	{
-		printf("%s open fault!", file.c_str());
-		return 0;
-	}
-
-	AssetFile assetFile;
-	assetFile.Read(fileReader);
-	assert(assetFile.header.format == 9 || assetFile.header.format == 15);
-	if (!(assetFile.header.format == 9 || assetFile.header.format == 15))
-	{
-		printf("%s format not support!", file.c_str());
-		return 0;
-	}
-
 	Extractor::RegisterExtractor(ClassID::TextAsset, std::make_shared<TextAssetExtractor>(".txt"));
 	Extractor::RegisterExtractor(ClassID::Shader, std::make_shared<TextAssetExtractor>(".shader"));
 
-	fileReader.Seek(0);
-	assetFile.LoadAllObjects(fileReader, [&file](const ObjectInfo& objectInfo, DataReader& objectReader)
+	filesystem::path workDir;
+	if (argc == 1) workDir = "D:\\Data";
+	else workDir = filesystem::path((filesystem::path::value_type*)argv[1]);
+
+	if (!filesystem::exists(workDir))
 	{
-		auto extractor = Extractor::GetExtractor(objectInfo.classID);
-		std::string name = extractor->GetObjectName(objectReader);
-		if (name.empty()) name = std::to_string(objectInfo.pathID);
-		std::string path = "output/" + file + " - " + name + "." + std::to_string(objectInfo.classID);
-		FileWriter writer(path);
-		extractor->Extract(writer, objectReader, objectInfo.length);
-		writer.Close();
-	});
+		printf("%s not exist!", workDir.string().c_str());
+		return 0;
+	}
+
+	filesystem::path outputDir = workDir;
+	outputDir.append("Output/");
+
+	filesystem::recursive_directory_iterator itor(workDir);
+	while (itor != filesystem::end(itor))
+	{
+		filesystem::path path = itor->path();
+		printf("%s\n", path.string().c_str());
+		++itor;
+
+		if (filesystem::is_directory(path)) continue;
+
+		std::string ext = path.extension().string();
+		puts(ext.c_str());
+		if (ext == ".dll" || ext == ".png" || ext == ".xml")
+		{
+			continue;
+		}
+		else if (ext.find(".split") != ext.npos)
+		{
+
+		}
+		else
+		{
+			try
+			{
+				FileReader fileReader(path.string());
+				if (!fileReader.isValid())
+				{
+					throw std::exception((path.string() + " open fault!").c_str());
+				}
+
+				AssetFile assetFile;
+				assetFile.Read(fileReader);
+				if (!assetFile.IsValid())
+				{
+					throw std::exception((path.string() + " format not support!").c_str());
+				}
+
+				fileReader.Seek(0);
+				filesystem::path objectDir = outputDir;
+				objectDir.append(path.filename().string() + "/");
+
+				assetFile.LoadAllObjects(fileReader, [&objectDir](const ObjectInfo& objectInfo, DataReader& objectReader)
+				{
+					auto extractor = Extractor::GetExtractor(objectInfo.classID);
+					//std::string name = extractor->GetObjectName(objectReader);
+					//if (name.empty()) name = std::to_string(objectInfo.pathID);
+					std::string name = std::to_string(objectInfo.pathID);
+
+					filesystem::path objectFile = objectDir;
+					objectFile.append(name + "." + std::to_string(objectInfo.classID));
+					filesystem::create_directories(objectDir);
+					FileWriter writer(objectFile.string());
+					extractor->Extract(writer, objectReader, objectInfo.length);
+					writer.Close();
+				});
+			}
+			catch (std::exception e)
+			{
+				printf("%s\n", e.what());
+			}
+
+		}
+	}
+
 }

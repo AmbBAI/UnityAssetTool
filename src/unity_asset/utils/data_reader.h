@@ -4,8 +4,8 @@
 #include "utils/header.h"
 #include "utils/file_writer.h"
 
-#include "LzmaDec.h"
-#include "Alloc.h"
+#include "lzma/LzmaDec.h"
+#include "lzma/Alloc.h"
 
 class DataReader
 {

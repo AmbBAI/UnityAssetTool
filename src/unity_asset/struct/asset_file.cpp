@@ -1,12 +1,13 @@
 #include "asset_file.h"
 
-void AssetFile::Read(DataReader& reader)
+bool AssetFile::Read(DataReader& reader)
 {
 	header.Read(reader);
+	if (!IsValid()) return false;
 	size_t startOffset = reader.Tell();
 	metaData.Read(reader, header.format);
 	size_t endOffset = reader.Tell();
-
+	return true;
 }
 
 bool AssetFile::LoadObject(uint64_t objectID, DataReader& reader, std::function<void(const ObjectInfo&, DataReader&)> func)

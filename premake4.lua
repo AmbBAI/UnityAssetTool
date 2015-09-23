@@ -20,14 +20,13 @@ solution "UnityAssetTool"
     targetdir "lib/"
     
     files {
-      "src/lzma/**.h",
-      "src/lzma/**.c",
+      "src/thirdpart/lzma/**.h",
+      "src/thirdpart/lzma/**.c",
     }
-    includedirs { "src/lzma/" }
+    includedirs { "src/thirdpart/lzma/" }
     libdirs {"lib/"}
     defines {"_7ZIP_ST"}
 
-  local lib_proj_dir = ""
   project "unity_asset"
     kind "StaticLib"
     language "C++"
@@ -37,7 +36,11 @@ solution "UnityAssetTool"
       "src/unity_asset/**.h",
       "src/unity_asset/**.cpp",
     }
-    includedirs { "src/lzma/", "src/unity_asset/" }
+    includedirs {
+      "src/thirdpart/",
+      "src/thirdpart/lzma/",
+      "src/unity_asset/"
+    }
     libdirs {"lib/"}
     links { "lzma" }
 
@@ -56,8 +59,13 @@ solution "UnityAssetTool"
       "src/unity_asset_extractor/**.cpp",
     }
     
-    includedirs { "src/lzma/", "src/unity_asset/", "src/unity_asset_extractor/" }
-    libdirs {"lib/"}
+    includedirs {
+      "src/thirdpart/",
+      "src/thirdpart/lzma/",
+      "src/unity_asset/",
+      "src/unity_asset_extractor/"
+    }
+    libdirs { "lib/", "lib/boost/" }
     links { "lzma", "unity_asset" }
 
     configuration "windows"
@@ -75,7 +83,12 @@ solution "UnityAssetTool"
       "src/unity_assetbundle_extractor/**.cpp",
     }
     
-    includedirs { "src/lzma/", "src/unity_asset/", "src/unity_assetbundle_extractor/" }
+    includedirs {
+      "src/thirdpart/",
+      "src/thirdpart/lzma/",
+      "src/unity_asset/",
+      "src/unity_assetbundle_extractor/",
+    }
     libdirs {"lib/"}
     links { "lzma", "unity_asset" }
 
@@ -94,7 +107,12 @@ solution "UnityAssetTool"
       "src/test/**.cpp",
     }
     
-    includedirs { "src/lzma/", "src/unity_asset/", "src/test/" }
+    includedirs {
+      "src/thirdpart/",
+      "src/thirdpart/lzma/",
+      "src/unity_asset/",
+      "src/test/"
+    }
     libdirs {"lib/"}
     links { "lzma", "unity_asset" }
 
