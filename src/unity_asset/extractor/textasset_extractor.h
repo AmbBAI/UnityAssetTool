@@ -9,7 +9,6 @@ class TextAssetExtractor : public Extractor
 {
 public:
 	TextAssetExtractor() = default;
-	explicit TextAssetExtractor(const std::string& _ext) : Extractor(_ext) {}
 
 	void Extract(FileWriter& writer, DataReader& reader, size_t length) override;
 };

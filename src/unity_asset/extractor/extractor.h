@@ -3,6 +3,7 @@
 
 #include "utils/header.h"
 #include "utils/data_reader.h"
+#include "struct/type_tree.h"
 
 enum ClassID
 {
@@ -13,18 +14,17 @@ enum ClassID
 
 class Extractor
 {
-	std::string ext = ".bin";
-
 public:
 	Extractor() = default;
-	explicit Extractor(const std::string& _ext) : ext(_ext) {}
 
-	std::string GetObjectName(DataReader& reader);
 	virtual void Extract(FileWriter& writer, DataReader& reader, size_t length);
+	virtual void DumpText(FileWriter& writer, DataReader& reader, size_t length, const TypeTree& typeTree, int32_t classID);
+	static void DumpBinary(FileWriter& writer, DataReader& reader, size_t length);
 
-	std::string GetFileExt() { return ext; }
-
+private:
 	static std::map<uint16_t, std::shared_ptr<Extractor> > extractorMap;
+
+public:
 	static void RegisterExtractor(uint16_t classID, const std::shared_ptr<Extractor>& extractor);
 	static std::shared_ptr<Extractor> GetExtractor(uint16_t classID);
 };

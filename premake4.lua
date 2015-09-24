@@ -1,4 +1,32 @@
 
+function add_proj (name, with_boost)
+    project (name)
+      kind "ConsoleApp"
+      targetdir "bin/"
+      
+      files {
+        path.join("src", name, "**.h"),
+        path.join("src", name, "**.hpp"),
+        path.join("src", name, "**.cpp")
+      }
+      
+      includedirs {
+        "src/thirdpart/",
+        "src/thirdpart/lzma/",
+        "src/unity_asset/",
+        path.join("src", name)
+      }
+      libdirs { "lib/" }
+      if with_boost then libdirs{ "lib/boost/" } end
+      links { "lzma", "unity_asset" }
+  
+      configuration "windows"
+        defines { "_CRT_SECURE_NO_WARNINGS" }
+  
+      configuration "macosx"
+        buildoptions { "-std=c++11", "-Wno-deprecated-declarations" }
+end
+
 solution "UnityAssetTool"
   location "build/"
   debugdir "bin/"
@@ -50,74 +78,6 @@ solution "UnityAssetTool"
     configuration "macosx"
       buildoptions { "-std=c++11", "-Wno-deprecated-declarations" }
 
-  project "unity_asset_extractor"
-    kind "ConsoleApp"
-    targetdir "bin/"
-    
-    files {
-      "src/unity_asset_extractor/**.h",
-      "src/unity_asset_extractor/**.cpp",
-    }
-    
-    includedirs {
-      "src/thirdpart/",
-      "src/thirdpart/lzma/",
-      "src/unity_asset/",
-      "src/unity_asset_extractor/"
-    }
-    libdirs { "lib/", "lib/boost/" }
-    links { "lzma", "unity_asset" }
-
-    configuration "windows"
-      defines { "_CRT_SECURE_NO_WARNINGS" }
-
-    configuration "macosx"
-      buildoptions { "-std=c++11", "-Wno-deprecated-declarations" }
-
-  project "unity_assetbundle_extractor"
-    kind "ConsoleApp"
-    targetdir "bin/"
-    
-    files {
-      "src/unity_assetbundle_extractor/**.h",
-      "src/unity_assetbundle_extractor/**.cpp",
-    }
-    
-    includedirs {
-      "src/thirdpart/",
-      "src/thirdpart/lzma/",
-      "src/unity_asset/",
-      "src/unity_assetbundle_extractor/",
-    }
-    libdirs {"lib/"}
-    links { "lzma", "unity_asset" }
-
-    configuration "windows"
-      defines { "_CRT_SECURE_NO_WARNINGS" }
-
-    configuration "macosx"
-      buildoptions { "-std=c++11", "-Wno-deprecated-declarations" }
-
-  project "test"
-    kind "ConsoleApp"
-    targetdir "bin/"
-    
-    files {
-      "src/test/**.h",
-      "src/test/**.cpp",
-    }
-    
-    includedirs {
-      "src/thirdpart/",
-      "src/thirdpart/lzma/",
-      "src/unity_asset/",
-      "src/test/"
-    }
-    libdirs {"lib/"}
-    links { "lzma", "unity_asset" }
-
-    configuration "windows"
-      defines { "_CRT_SECURE_NO_WARNINGS" }
-
-    configuration "macosx"
-      buildoptions { "-std=c++11", "-Wno-deprecated-declarations" }
+    add_proj("unity_asset_extractor", true)
+    add_proj("unity_assetbundle_extractor", false)
+    add_proj("test", false)

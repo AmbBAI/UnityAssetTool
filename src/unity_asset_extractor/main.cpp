@@ -1,5 +1,6 @@
 #include "utils/file_reader.h"
 #include "struct/asset_file.h"
+#include "struct/type_tree_database.h"
 #include "extractor/extractor.h"
 #include "extractor/textasset_extractor.h"
 
@@ -8,9 +9,11 @@ using namespace boost;
 
 int main(int argc, char *argv)
 {
-	BaseClass::LoadDefaultStringTable("strings.dat");
-	Extractor::RegisterExtractor(ClassID::TextAsset, std::make_shared<TextAssetExtractor>(".txt"));
-	Extractor::RegisterExtractor(ClassID::Shader, std::make_shared<TextAssetExtractor>(".shader"));
+	StringTable::LoadDefaultStringTable("strings.dat");
+	TypeTreeDatabase::LoadTypeTreeDatabase(9, "types9.dat");
+	TypeTreeDatabase::LoadTypeTreeDatabase(15, "types15.dat");
+	//Extractor::RegisterExtractor(ClassID::TextAsset, std::make_shared<TextAssetExtractor>(".txt"));
+	//Extractor::RegisterExtractor(ClassID::Shader, std::make_shared<TextAssetExtractor>(".shader"));
 
 	filesystem::path workDir;
 	if (argc == 1) workDir = "D:\\Data";
@@ -67,7 +70,6 @@ int main(int argc, char *argv)
 
 				assetFile.LoadAllObjects(fileReader, [&objectDir](const ObjectInfo& objectInfo, DataReader& objectReader)
 				{
-					auto extractor = Extractor::GetExtractor(objectInfo.classID);
 					//std::string name = extractor->GetObjectName(objectReader);
 					//if (name.empty()) name = std::to_string(objectInfo.pathID);
 					std::string name = std::to_string(objectInfo.pathID);
@@ -76,7 +78,7 @@ int main(int argc, char *argv)
 					objectFile.append(name + "." + std::to_string(objectInfo.classID));
 					filesystem::create_directories(objectDir);
 					FileWriter writer(objectFile.string());
-					extractor->Extract(writer, objectReader, objectInfo.length);
+					Extractor::DumpBinary(writer, objectReader, objectInfo.length);
 					writer.Close();
 				});
 			}

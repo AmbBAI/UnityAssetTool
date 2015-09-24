@@ -9,8 +9,8 @@ struct Field
 	uint8_t treeLevel = 0;
 	uint8_t isArray = 0;
 	int32_t size = -1;
-	int32_t index = 0;
-	int32_t metaflag = 0;
+	uint32_t index = 0;
+	uint32_t metaflag = 0;
 };
 
 struct Class
@@ -24,10 +24,10 @@ struct Class
 
 int main()
 {
-	FileReader reader("classdata_0E.dat");
-	FileWriter writer("types15.dat");
+	FileReader reader("classdata_09.dat");
+	FileWriter writer("types9.dat");
 
-	writer.WriteNumber<uint16_t>(9);
+	writer.WriteNumber<int32_t>(15);
 	reader.Skip(4);
 	uint8_t version = reader.ReadNumber<uint8_t>();
 	uint8_t format = reader.ReadNumber<uint8_t>();
@@ -35,7 +35,6 @@ int main()
 	uint32_t stringTableLen = reader.ReadNumber<uint32_t>();
 	writer.WriteNumber<uint32_t>(stringTableLen);
 	uint32_t stringTableOffset = reader.ReadNumber<uint32_t>();
-	writer.WriteNumber<uint32_t>(stringTableOffset);
 	uint32_t numberClasses = reader.ReadNumber<uint32_t>();
 	writer.WriteNumber<uint32_t>(numberClasses);
 
@@ -69,9 +68,11 @@ int main()
 			f.name = (const char*)&stringTable[nameOffset];
 			f.treeLevel = reader.ReadNumber<uint8_t>();
 			f.isArray = reader.ReadNumber<uint8_t>();
-			f.size = reader.ReadNumber<uint32_t>();
-			f.index = reader.ReadNumber<uint32_t>();
-			if (version == 0) f.metaflag = reader.ReadNumber<uint32_t>();
+			f.size = reader.ReadNumber<int32_t>();
+			if (version == 0)
+				f.index = reader.ReadNumber<uint32_t>();
+			else f.index = i;
+			f.metaflag = reader.ReadNumber<uint32_t>();
 
 			writer.WriteNumber<uint16_t>(0); //version
 			writer.WriteNumber<uint8_t>(f.treeLevel); //
@@ -79,8 +80,8 @@ int main()
 			writer.WriteNumber<int32_t>(typeOffset); //
 			writer.WriteNumber<int32_t>(nameOffset); //
 			writer.WriteNumber<int32_t>(f.size); //
-			writer.WriteNumber<int32_t>(f.index); //
-			writer.WriteNumber<int32_t>(f.metaflag); //
+			writer.WriteNumber<uint32_t>(f.index); //
+			writer.WriteNumber<uint32_t>(f.metaflag); //
 
 			c.fields.emplace_back(f);
 		}

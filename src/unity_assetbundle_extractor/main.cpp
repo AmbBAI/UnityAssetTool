@@ -2,7 +2,7 @@
 
 int main()
 {
-	BaseClass::LoadDefaultStringTable("strings.dat");
+	StringTable::LoadDefaultStringTable("strings.dat");
 
 	FileReader fileReader("test5.1.assetbundle");
 

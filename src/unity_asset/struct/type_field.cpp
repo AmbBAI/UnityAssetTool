@@ -11,10 +11,9 @@ void TypeField::Read(DataReader& reader, int format)
 		isArray = (reader.ReadByte() != 0);
 		typeOffset = reader.ReadNumber<int32_t>();
 		nameOffset = reader.ReadNumber<int32_t>();
-		size = reader.ReadNumber<uint32_t>();
+		size = reader.ReadNumber<int32_t>();
 		index = reader.ReadNumber<uint32_t>();
 		metaFlag = reader.ReadNumber<uint32_t>();
-		//printf("%u\n", metaFlag);
 	}
 	else
 	{

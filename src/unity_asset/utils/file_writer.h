@@ -57,6 +57,14 @@ public:
 		WriteBytes(ptr, sizeof(Type));
 	}
 
+	void Print(const char* format, ...)
+	{
+		va_list args;
+		va_start(args, format);
+		vfprintf(filePtr, format, args);
+		va_end(args);
+	}
+
 	FileWriter& operator =(FileWriter&& other)
 	{
 		if (this == &other) return *this;

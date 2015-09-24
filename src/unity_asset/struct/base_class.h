@@ -4,27 +4,26 @@
 #include "utils/header.h"
 #include "utils/data_reader.h"
 #include "struct/type_field.h"
+#include "struct/string_table.h"
 
 struct BaseClass
 {
 public:
 	int32_t classID = 0;
-	uint8_t scriptID[16] = { 0 };
-	uint8_t oldTypeHash[16] = { 0 };
+	std::string typeHash;
+	std::string oldTypeHash;
 
-	typedef std::vector<uint8_t> StringTable;
-	int32_t numberFields = 0;
-	int32_t stringTableLen = 0;
-	StringTable stringTable;
+	std::shared_ptr<StringTable> stringTable;
 	std::vector<TypeField> typeFields;
 
 public:
 	void Read(DataReader& reader, int format, bool embedded);
-	std::string CheckStringTable(const StringTable& stringTable, int32_t offset);
+	void ReadTypeFormat(DataReader& reader, int format, int32_t numberFields);
+	void SetStringTable(std::shared_ptr<StringTable>& stringTable) { this->stringTable = stringTable; }
+	std::shared_ptr<StringTable> GetStringTable() { return this->stringTable; }
 
 public:
-	static StringTable defaultStringTable;
-	static bool LoadDefaultStringTable(std::string file);
+	static std::string HashToString(uint8_t hash[16]);
 };
 
 #endif //!_BASE_CLASS_H_
