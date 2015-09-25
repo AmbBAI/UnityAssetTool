@@ -35,10 +35,10 @@ public:
 		size = 0;
 	}
 
-	bool isValid() { return data != nullptr; }
+	virtual bool isValid() const { return data != nullptr; }
 
-	void SetByteOrder(ByteOrder byteOrder) { this->byteOrder = byteOrder; }
-	ByteOrder GetByteOrder() const { return byteOrder; }
+	virtual void SetByteOrder(ByteOrder byteOrder) { this->byteOrder = byteOrder; }
+	virtual ByteOrder GetByteOrder() const { return byteOrder; }
 
 	virtual size_t GetSize() const { return size; }
 	virtual size_t Tell() const { return offset; }
@@ -100,6 +100,30 @@ public:
 		other.byteOrder = ByteOrder_LittleEndian;
 
 		return *this;
+	}
+
+	static DataReader Join(std::vector<std::shared_ptr<DataReader> > readerList)
+	{
+		size_t totalSize = 0;
+		for (auto& readerPtr : readerList)
+		{
+			if (!readerPtr->isValid()) return DataReader();
+			totalSize += readerPtr->GetSize();
+		}
+		if (totalSize <= 0) return DataReader();
+
+		uint8_t* ptr = new uint8_t[totalSize];
+		size_t offset = 0;
+		for (auto& readerPtr : readerList)
+		{
+			size_t readerOffset = readerPtr->Tell();
+			size_t readerSize = readerPtr->GetSize();
+			readerPtr->Seek(0);
+			readerPtr->ReadBytes(ptr + offset, readerSize);
+			readerPtr->Seek(readerOffset);
+			offset += readerSize;
+		}
+		return DataReader(ptr, totalSize);
 	}
 
 	DataReader Decompress()
