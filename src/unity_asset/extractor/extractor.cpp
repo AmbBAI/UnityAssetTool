@@ -1,21 +1,33 @@
 #include "extractor.h"
 
-//std::string Extractor::GetObjectName(DataReader& reader)
-//{
-//	size_t originOffset = reader.Tell();
-//	reader.SetByteOrder(ByteOrder_LittleEndian);
-//
-//	uint32_t len = reader.ReadNumber<uint32_t>();
-//	std::string name;
-//	if (len > 0)
-//	{
-//		name.assign(len, '\0');
-//		reader.ReadBytes((uint8_t*)name.c_str(), len);
-//	}
-//
-//	reader.Seek(originOffset);
-//	return name;
-//}
+std::string Extractor::GetObjectName(DataReader& reader)
+{
+	std::string name;
+	try
+	{
+		size_t originOffset = reader.Tell();
+		reader.SetByteOrder(ByteOrder_LittleEndian);
+
+		uint32_t len = reader.ReadNumber<uint32_t>();
+		if (len > 100)
+		{
+			throw std::exception("error name");
+		}
+
+		if (len > 0)
+		{
+			name.assign(len, '\0');
+			reader.ReadBytes((uint8_t*)name.c_str(), len);
+		}
+
+		reader.Seek(originOffset);
+	}
+	catch (std::exception e)
+	{
+		return "";
+	}
+	return name;
+}
 
 void Extractor::Extract(FileWriter& writer, DataReader& reader, size_t length)
 {

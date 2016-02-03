@@ -45,7 +45,8 @@ int main(int argc, char *argv)
 			|| ext == ".exe"
 			|| ext == ".dll"
 			|| ext == ".png"
-			|| ext == ".xml")
+			|| ext == ".xml"
+			|| ext == ".resource")
 		{
 			printf("ignore file %s\n", path.string().c_str());
 			continue;

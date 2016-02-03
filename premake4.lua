@@ -12,7 +12,7 @@ function add_proj (name, with_boost)
       
       includedirs {
         "src/thirdpart/",
-        "src/thirdpart/lzma/",
+        "src/thirdpart/boost/",
         "src/unity_asset/",
         path.join("src", name)
       }
@@ -66,7 +66,6 @@ solution "UnityAssetTool"
     }
     includedirs {
       "src/thirdpart/",
-      "src/thirdpart/lzma/",
       "src/unity_asset/"
     }
     libdirs {"lib/"}
@@ -79,5 +78,6 @@ solution "UnityAssetTool"
       buildoptions { "-std=c++11", "-Wno-deprecated-declarations" }
 
     add_proj("unity_asset_extractor", true)
-    add_proj("unity_assetbundle_extractor", false)
+    add_proj("assetbundle_analytics", true)
+    add_proj("unity_assetbundle_extractor", true)
     add_proj("test", false)

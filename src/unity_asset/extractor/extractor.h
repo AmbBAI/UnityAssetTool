@@ -20,6 +20,7 @@ public:
 	virtual void Extract(FileWriter& writer, DataReader& reader, size_t length);
 	virtual void DumpText(FileWriter& writer, DataReader& reader, size_t length, const TypeTree& typeTree, int32_t classID);
 	static void DumpBinary(FileWriter& writer, DataReader& reader, size_t length);
+	static std::string GetObjectName(DataReader& reader);
 
 private:
 	static std::map<uint16_t, std::shared_ptr<Extractor> > extractorMap;
